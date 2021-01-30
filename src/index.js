@@ -1,31 +1,19 @@
-// call the packages we need
-var express    = require('express');        // call express
-var app        = express();                 // define our app using express
-var bodyParser = require('body-parser');
+require('dotenv').config()
 
-// configure app to use bodyParser()
-// this will let us get the data from a POST
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+const express = require('express')
+const app = express()
+const port = process.env.port || 3000;
+const mongoose = require('mongoose')
 
-var PORT = process.env.PORT || 3000;        // set our port
 
-// ROUTES FOR OUR API
-// =============================================================================
-var router = express.Router();              // get an instance of the express Router
+mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true })
+const db = mongoose.connection
+db.on('error', (error) => console.error(error))
+db.once('open', () => console.log('Connected to Database'))
 
-// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
-router.get('/', function(req, res) {
-    res.json({ message: 'hooray! welcome to our api!' });   
-});
+app.use(express.json())
 
-// more routes for our API will happen here
+const me = require('./routes/me')
+app.use('/', me)
 
-// REGISTER OUR ROUTES -------------------------------
-// all of our routes will be prefixed with /api
-app.use('/', router);
-
-// START THE SERVER
-// =============================================================================
-app.listen(PORT);
-console.log('Server Starting at ' + PORT);
+app.listen(port, () => console.log('Server Started'))
