@@ -1,31 +1,19 @@
-const express = require('express');
-const morgan = require('morgan');
-// const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 require('dotenv').config()
-const app = express();
-const route = require('./routes');
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(morgan('dev'));
-
-app.use('/api', route);
+const express = require('express')
+const app = express()
+const port = process.env.port || 3000;
+const mongoose = require('mongoose')
 
 
+mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true })
+const db = mongoose.connection
+db.on('error', (error) => console.error(error))
+db.once('open', () => console.log('Connected to Database'))
 
-// // Connect to Database new
-// mongoose.connect(
-//     process.env.DB_CON_STRING,
-//     { useNewUrlParser: true },
-//     (err) => {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             console.log('Successfully Connected to the database');
-//         }
-//     }
-// );
+app.use(express.json())
 
-app.listen(process.env.PORT);
-console.log(`The magic happens at ${process.env.HOST}:${process.env.PORT}`);
+const me = require('./routes/me')
+app.use('/', me)
+
+app.listen(port, () => console.log('Server Started'))
