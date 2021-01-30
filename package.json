@@ -4,7 +4,7 @@
   "description": "An assessment projects for flutterwave node js backend",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/index.js",
+    "start": "nodemon ./src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
